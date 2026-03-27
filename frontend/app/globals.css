@@ -1,0 +1,237 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
+:root {
+  --bg-primary: #111217;
+  --bg-secondary: #151a21;
+  --bg-tertiary: #1e1f23;
+  --accent-cyan: #3b82f6;
+  --accent-purple: #2563eb;
+  --accent-gold: #f0d090;
+  --accent-green: #3b82f6;
+  --accent-red: #f87171;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(59, 130, 246, 0.35);
+  --font-inter: "Inter", sans-serif;
+  --font-rajdhani: "Rajdhani", sans-serif;
+  --font-jetbrains: "JetBrains Mono", monospace;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: #f4f7fb;
+  font-family: var(--font-inter), sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+html,
+body {
+  @apply min-h-[100dvh] antialiased;
+}
+
+/* Tier glow borders */
+.tier-common {
+  border-color: #888780;
+}
+.tier-uncommon {
+  border-color: #3b82f6;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.35);
+}
+.tier-rare {
+  border-color: #4f8ef7;
+  box-shadow: 0 0 8px rgba(79, 142, 247, 0.3);
+}
+.tier-legendary {
+  border-color: #7c5cfc;
+  box-shadow: 0 0 12px rgba(124, 92, 252, 0.4);
+}
+.tier-ancient {
+  border-color: #ff9f43;
+  box-shadow: 0 0 12px rgba(255, 159, 67, 0.4);
+}
+.tier-godly {
+  border-color: #f5c542;
+  animation: pulseGold 2s ease-in-out infinite;
+}
+.tier-chroma {
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  animation: rainbow 3s linear infinite;
+  position: relative;
+}
+.tier-chroma::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(from 0deg, #ff0080, #ff8c00, #40e0d0, #7c5cfc, #ff0080);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: rainbow 3s linear infinite;
+  z-index: 0;
+}
+
+@keyframes pulseGold {
+  0%,
+  100% {
+    box-shadow: 0 0 12px rgba(245, 197, 66, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 32px rgba(245, 197, 66, 0.8);
+  }
+}
+
+@keyframes rainbow {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Skeleton shimmer */
+.skeleton {
+  background: linear-gradient(90deg, #1a1a24 25%, #22222e 50%, #1a1a24 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.3);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.5);
+}
+
+/* Ambient mesh — used behind main shell */
+.shell-mesh {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 15% -10%, rgba(59, 130, 246, 0.07), transparent 52%),
+    radial-gradient(ellipse 55% 38% at 92% 12%, rgba(37, 99, 235, 0.06), transparent 48%),
+    radial-gradient(ellipse 45% 30% at 50% 100%, rgba(96, 165, 250, 0.04), transparent 50%);
+}
+
+.shell-grid {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.04;
+  background-image:
+    linear-gradient(rgba(244, 247, 251, 0.4) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 247, 251, 0.4) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, black, transparent);
+}
+
+.font-display {
+  font-family: var(--font-rajdhani), sans-serif;
+}
+
+.chroma-border {
+  border: 2px solid transparent;
+  background-image: linear-gradient(var(--bg-tertiary), var(--bg-tertiary)),
+    linear-gradient(120deg, #f472b6, #a78bfa, #22d3ee, #f472b6);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  animation: chroma-hue 4s linear infinite;
+}
+
+.mythic-border {
+  border: 2px solid transparent;
+  background-image: linear-gradient(var(--bg-tertiary), var(--bg-tertiary)),
+    linear-gradient(120deg, #fb7185, #fcd34d, #34d399, #60a5fa, #a78bfa, #fb7185);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  animation: chroma-hue 5s linear infinite;
+}
+
+@keyframes chroma-hue {
+  from {
+    filter: hue-rotate(0deg);
+  }
+  to {
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes ticker {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-ticker {
+  animation: ticker 45s linear infinite;
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--bg-tertiary) 0%,
+    #22222e 50%,
+    var(--bg-tertiary) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-move 1.2s ease-in-out infinite;
+}
+
+@keyframes skeleton-move {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.coin-scene {
+  perspective: 900px;
+}
+
+.coin-3d {
+  transform-style: preserve-3d;
+  animation: coin-flip-y 3s ease-out forwards;
+  background: linear-gradient(135deg, var(--accent-gold), var(--accent-purple));
+}
+
+@keyframes coin-flip-y {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(2520deg);
+  }
+}

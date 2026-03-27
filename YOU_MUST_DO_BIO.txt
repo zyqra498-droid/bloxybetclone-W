@@ -1,0 +1,33 @@
+================================================================================
+LOCAL SETUP — what only you can do
+================================================================================
+
+1) DATABASE & REDIS
+   - Run Postgres + Redis (Docker, cloud, or native installs). Set DATABASE_URL
+     and REDIS_URL in .env.
+
+2) INSTALL & MIGRATE
+   - From project root: npm install
+   - npx prisma generate --schema=./prisma/schema.prisma
+   - npx prisma db push --schema=./prisma/schema.prisma
+   - npm run db:seed
+
+   Coin games (coinflip/jackpot with ◈) need a non-zero site balance — use
+   POST /api/admin/adjust-balance (admin account) or seed data.
+
+3) LOG IN (BIO VERIFICATION — no Roblox OAuth app required)
+   - npm run dev
+   - Open http://localhost:3000/login
+   - Click "Get verification code", copy the code.
+   - On https://www.roblox.com → your profile → About / Description: paste the
+     code and save.
+   - Enter your exact Roblox username on the login page and click Verify.
+   - You can remove the code from your bio after you are logged in.
+
+4) TRADE BOTS (deposits / withdrawals)
+   - Seed creates a placeholder bot. For real trades you must add bot accounts
+     with valid .ROBLOSECURITY cookies via /api/bots (admin) and set
+     MOCK_ROBLOX_TRADES=false only after implementing the Roblox trade poller
+     (see backend trade worker).
+
+================================================================================

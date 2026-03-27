@@ -1,0 +1,443 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserItemStatus {
+  deposited
+  in_game
+  withdrawn
+  pending_trade
+}
+
+enum TradeDirection {
+  deposit
+  withdraw
+}
+
+enum TradeStatus {
+  PENDING
+  OFFER_SENT
+  ACCEPTED
+  DECLINED
+  FAILED
+  TIMEOUT
+}
+
+enum BotPoolStatus {
+  idle
+  busy
+  error
+  disabled
+}
+
+enum CoinflipRoomStatus {
+  open
+  resolving
+  completed
+  expired
+  cancelled
+}
+
+enum JackpotRoundStatus {
+  waiting
+  active
+  resolving
+  completed
+}
+
+enum CaseBattleStatus {
+  lobby
+  opening
+  completed
+  cancelled
+}
+
+enum LedgerEntryType {
+  admin_adjust
+  game_win
+  game_loss
+  deposit_coin
+  withdraw_coin
+  lock
+  unlock
+  game_stake
+  game_payout
+  stake_refund
+}
+
+enum CoinflipStakeMode {
+  items
+  coins
+}
+
+model BioChallenge {
+  id         String    @id @default(cuid())
+  code       String    @unique
+  expiresAt  DateTime  @map("expires_at")
+  consumedAt DateTime? @map("consumed_at")
+  ip         String?
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  @@index([expiresAt])
+  @@map("bio_challenges")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String?  @map("user_id")
+  actorId    String?  @map("actor_id")
+  action     String
+  targetType String?  @map("target_type")
+  targetId   String?  @map("target_id")
+  metadata   Json?
+  ip         String?
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([userId, createdAt])
+  @@index([action])
+  @@map("audit_logs")
+}
+
+model BalanceLedger {
+  id           String          @id @default(cuid())
+  userId       String          @map("user_id")
+  amount       Decimal         @db.Decimal(20, 4)
+  balanceAfter Decimal         @map("balance_after") @db.Decimal(20, 4)
+  entryType    LedgerEntryType @map("entry_type")
+  refType      String?         @map("ref_type")
+  refId        String?         @map("ref_id")
+  metadata     Json?
+  createdAt    DateTime        @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@map("balance_ledger")
+}
+
+model User {
+  id                String    @id @default(cuid())
+  robloxId          String    @unique @map("roblox_id")
+  username          String
+  avatarUrl         String?   @map("avatar_url")
+  accountCreatedAt  DateTime? @map("account_created_at")
+  robuxEstimate     Int?      @map("robux_estimate")
+  balanceCoins      Decimal   @default(0) @map("balance_coins") @db.Decimal(20, 4)
+  lockedCoins       Decimal   @default(0) @map("locked_coins") @db.Decimal(20, 4)
+  createdAt         DateTime  @default(now()) @map("created_at")
+  banned            Boolean   @default(false)
+  banReason         String?   @map("ban_reason")
+  ipAddress         String?   @map("ip_address")
+  isAdmin           Boolean   @default(false) @map("is_admin")
+  suspiciousScore   Int       @default(0) @map("suspicious_score")
+  lastLoginIp       String?   @map("last_login_ip")
+  deviceFingerprint String?   @map("device_fingerprint")
+  adminTotpSecret   String?   @map("admin_totp_secret")
+  adminTotpEnabled  Boolean   @default(false) @map("admin_totp_enabled")
+  linkedBotId       String?   @map("linked_bot_id")
+
+  // ✅ FIX: added missing Bot relation to match Bot.linkedUsers @relation("UserLinkedBot")
+  linkedBot             Bot?                    @relation("UserLinkedBot", fields: [linkedBotId], references: [id])
+
+  sessions              Session[]
+  userItems             UserItem[]
+  trades                Trade[]
+  coinflipCreated       CoinflipRound[]         @relation("CoinflipCreator")
+  coinflipJoined        CoinflipRound[]         @relation("CoinflipJoiner")
+  coinflipWon           CoinflipRound[]         @relation("CoinflipWinner")
+  jackpotEntries        JackpotEntry[]
+  jackpotWins           JackpotRound[]          @relation("JackpotWinner")
+  notifications         Notification[]
+  loginEvents           LoginEvent[]
+  caseBattles           CaseBattleParticipant[]
+  balanceLedger         BalanceLedger[]
+
+  @@map("users")
+}
+
+model Session {
+  id                          String    @id @default(cuid())
+  userId                      String    @map("user_id")
+  refreshTokenHash            String    @map("refresh_token_hash")
+  jwtTokenHash                String?   @map("jwt_token_hash")
+  ip                          String?
+  createdAt                   DateTime  @default(now()) @map("created_at")
+  expiresAt                   DateTime  @map("expires_at")
+  robloxAccessTokenEncrypted  String?   @map("roblox_access_token_encrypted")
+  robloxRefreshTokenEncrypted String?   @map("roblox_refresh_token_encrypted")
+  robloxAccessExpiresAt       DateTime? @map("roblox_access_expires_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([refreshTokenHash])
+  @@map("sessions")
+}
+
+model LoginEvent {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  ip        String
+  success   Boolean
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([ip])
+  @@map("login_events")
+}
+
+model ItemValue {
+  id            String   @id @default(cuid())
+  robloxAssetId String   @unique @map("roblox_asset_id")
+  // Numeric Roblox catalog asset id for trades (robloxAssetId may be mm2-cat-* slug).
+  robloxCatalogAssetId String? @map("roblox_catalog_asset_id")
+  itemName      String   @map("item_name")
+  gameSource    String   @map("game_source")
+  valueCoins    Decimal  @map("value_coins") @db.Decimal(20, 4)
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@index([gameSource])
+  @@map("item_values")
+}
+
+model ItemValueHistory {
+  id            String   @id @default(cuid())
+  robloxAssetId String   @map("roblox_asset_id")
+  oldValue      Decimal  @map("old_value") @db.Decimal(20, 4)
+  newValue      Decimal  @map("new_value") @db.Decimal(20, 4)
+  adminId       String?  @map("admin_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@index([robloxAssetId])
+  @@map("item_value_history")
+}
+
+model UserItem {
+  id            String         @id @default(cuid())
+  userId        String         @map("user_id")
+  itemId        String         @map("item_id")
+  itemName      String         @map("item_name")
+  gameSource    String         @map("game_source")
+  valueCoins    Decimal        @map("value_coins") @db.Decimal(20, 4)
+  robloxAssetId String         @map("roblox_asset_id")
+  status        UserItemStatus @default(deposited)
+  depositedAt   DateTime?      @map("deposited_at")
+  ownershipAt   DateTime       @default(now()) @map("ownership_at")
+  tradable      Boolean        @default(true)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([itemId])
+  @@index([userId])
+  @@index([robloxAssetId])
+  @@map("user_items")
+}
+
+model Bot {
+  id                    String        @id @default(cuid())
+  robloxUsername        String        @map("roblox_username")
+  robloxUserId          String?       @map("roblox_user_id")
+  robloxCookieEncrypted String        @map("roblox_cookie_encrypted")
+  status                BotPoolStatus @default(idle)
+  assignedGame          String?       @map("assigned_game")
+  currentTradeId        String?       @map("current_trade_id")
+  createdAt             DateTime      @default(now()) @map("created_at")
+  lastCookieCheck       DateTime?     @map("last_cookie_check")
+
+  trades      Trade[]
+  linkedUsers User[]  @relation("UserLinkedBot")
+
+  @@map("bots")
+}
+
+model Trade {
+  id                String         @id @default(cuid())
+  botId             String         @map("bot_id")
+  userId            String         @map("user_id")
+  direction         TradeDirection
+  itemsJson         Json           @map("items_json")
+  status            TradeStatus    @default(PENDING)
+  initiatedAt       DateTime       @default(now()) @map("initiated_at")
+  completedAt       DateTime?      @map("completed_at")
+  expiresAt         DateTime?      @map("expires_at")
+  robloxTradeId     String?        @unique @map("roblox_trade_id")
+  expectedMemoHmac  String?        @map("expected_memo_hmac")
+  failureReason     String?        @map("failure_reason")
+  matchedSenderName String?        @map("matched_sender_name")
+
+  bot  Bot  @relation(fields: [botId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("trades")
+}
+
+model CoinflipRound {
+  id                String             @id @default(cuid())
+  creatorId         String             @map("creator_id")
+  joinerId          String?            @map("joiner_id")
+  stakeMode         CoinflipStakeMode  @default(items) @map("stake_mode")
+  creatorStakeCoins Decimal?           @map("creator_stake_coins") @db.Decimal(20, 4)
+  joinerStakeCoins  Decimal?           @map("joiner_stake_coins") @db.Decimal(20, 4)
+  creatorItemsJson  Json               @map("creator_items_json")
+  joinerItemsJson   Json?              @map("joiner_items_json")
+  winnerId          String?            @map("winner_id")
+  serverSeed        String?            @map("server_seed")
+  serverSeedHash    String?            @map("server_seed_hash")
+  clientSeed        String?            @map("client_seed")
+  nonce             String?
+  resultHash        String?            @map("result_hash")
+  taxAmount         Decimal?           @map("tax_amount") @db.Decimal(20, 4)
+  createdAt         DateTime           @default(now()) @map("created_at")
+  resolvedAt        DateTime?          @map("resolved_at")
+  expiresAt         DateTime           @map("expires_at")
+  status            CoinflipRoomStatus @default(open)
+
+  creator User  @relation("CoinflipCreator", fields: [creatorId], references: [id])
+  joiner  User? @relation("CoinflipJoiner", fields: [joinerId], references: [id])
+  winner  User? @relation("CoinflipWinner", fields: [winnerId], references: [id])
+
+  @@index([status])
+  @@map("coinflip_rounds")
+}
+
+model JackpotRound {
+  id             String             @id @default(cuid())
+  status         JackpotRoundStatus @default(waiting)
+  totalValue     Decimal            @default(0) @map("total_value") @db.Decimal(20, 4)
+  totalTickets   BigInt             @default(0) @map("total_tickets")
+  winnerId       String?            @map("winner_id")
+  winningTicket  BigInt?            @map("winning_ticket")
+  serverSeed     String?            @map("server_seed")
+  serverSeedHash String?            @map("server_seed_hash")
+  clientSeed     String?            @map("client_seed")
+  nonce          String?
+  resultHash     String?            @map("result_hash")
+  startedAt      DateTime?          @map("started_at")
+  endsAt         DateTime?          @map("ends_at")
+  resolvedAt     DateTime?          @map("resolved_at")
+
+  winner  User?          @relation("JackpotWinner", fields: [winnerId], references: [id])
+  entries JackpotEntry[]
+
+  @@index([status])
+  @@map("jackpot_rounds")
+}
+
+model JackpotEntry {
+  id          String   @id @default(cuid())
+  roundId     String   @map("round_id")
+  userId      String   @map("user_id")
+  itemsJson   Json     @map("items_json")
+  valueCoins  Decimal  @map("value_coins") @db.Decimal(20, 4)
+  ticketStart BigInt   @map("ticket_start")
+  ticketEnd   BigInt   @map("ticket_end")
+  enteredAt   DateTime @default(now()) @map("entered_at")
+
+  round JackpotRound @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  user  User         @relation(fields: [userId], references: [id])
+
+  @@index([roundId])
+  @@map("jackpot_entries")
+}
+
+model CaseDefinition {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String
+  poolJson  Json     @map("pool_json")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  battles CaseBattleRound[]
+
+  @@map("case_definitions")
+}
+
+model CaseBattleRound {
+  id             String           @id @default(cuid())
+  caseId         String           @map("case_id")
+  status         CaseBattleStatus @default(lobby)
+  maxPlayers     Int              @default(2) @map("max_players")
+  serverSeed     String?          @map("server_seed")
+  serverSeedHash String?          @map("server_seed_hash")
+  resultHash     String?          @map("result_hash")
+  winnerUserId   String?          @map("winner_user_id")
+  createdAt      DateTime         @default(now()) @map("created_at")
+  resolvedAt     DateTime?        @map("resolved_at")
+
+  caseDef CaseDefinition        @relation(fields: [caseId], references: [id])
+  players CaseBattleParticipant[]
+
+  @@index([status])
+  @@map("case_battle_rounds")
+}
+
+model CaseBattleParticipant {
+  id         String   @id @default(cuid())
+  battleId   String   @map("battle_id")
+  userId     String   @map("user_id")
+  clientSeed String?  @map("client_seed")
+  rollJson   Json?    @map("roll_json")
+  joinedAt   DateTime @default(now()) @map("joined_at")
+
+  battle CaseBattleRound @relation(fields: [battleId], references: [id], onDelete: Cascade)
+  user   User            @relation(fields: [userId], references: [id])
+
+  @@unique([battleId, userId])
+  @@map("case_battle_participants")
+}
+
+model AdminLog {
+  id           String   @id @default(cuid())
+  adminId      String   @map("admin_id")
+  action       String
+  targetUserId String?  @map("target_user_id")
+  detailsJson  Json?    @map("details_json")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([adminId])
+  @@map("admin_logs")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  type      String
+  title     String
+  body      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, read])
+  @@map("notifications")
+}
+
+model SiteConfig {
+  id   String @id @default("singleton")
+  data Json
+
+  @@map("site_config")
+}
+
+model FlaggedAccount {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  reason    String
+  metadata  Json?
+  resolved  Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@map("flagged_accounts")
+}
