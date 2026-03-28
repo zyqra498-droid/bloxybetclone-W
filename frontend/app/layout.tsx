@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${inter.variable} ${rajdhani.variable}`}>
-      <body className="bg-bg-primary text-text-primary">
+      <body className="bg-bg-base text-text-primary antialiased">
         <AuthProvider>
           <ToastProvider>
             <AppShellGate>{children}</AppShellGate>
