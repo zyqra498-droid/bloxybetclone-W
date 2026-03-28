@@ -1,7 +1,6 @@
 /**
  * Runs `prisma generate` after npm install.
- * - Skips on Vercel frontend-only builds
- * - Handles Windows EPERM lock issue
+ * Skips on Vercel frontend-only builds and handles Windows file lock issues.
  */
 
 const { execSync } = require("child_process");
@@ -10,15 +9,14 @@ const path = require("path");
 const root = path.join(__dirname, "..");
 const schemaPath = path.join(root, "prisma", "schema.prisma");
 
-// Detect if we're in a Vercel frontend build
-const isVercel = !!process.env.VERCEL;
-const isFrontendBuild =
-  process.env.PWD && process.env.PWD.includes("frontend");
+const isVercel = process.env.VERCEL === "1" || process.env.VERCEL === "true";
 
-if (isVercel && isFrontendBuild) {
-  console.log(
-    "[postinstall] Skipping Prisma generate (Vercel frontend build detected)."
-  );
+// Vercel monorepo/root installs can still happen even when Root Directory is `frontend`.
+// If we're on Vercel and the frontend workspace exists, skip Prisma generation.
+const frontendDir = path.join(root, "frontend");
+
+if (isVercel) {
+  console.log("[postinstall] Vercel environment detected. Skipping Prisma generate for frontend deploy.");
   process.exit(0);
 }
 
@@ -44,15 +42,12 @@ try {
     console.error(
       "\n[postinstall] Prisma Client could not be generated: engine file is locked (common on Windows)."
     );
-    console.error(
-      "  1. Stop ALL dev servers (npm run dev) and close other terminals."
-    );
+    console.error("  1. Stop all dev servers and other Node terminals.");
     console.error("  2. Run: npm run db:generate\n");
     process.exit(0);
   }
 
   console.error("[postinstall] Prisma generate failed:");
   console.error(out);
-
   process.exit(e.status ?? 1);
 }
