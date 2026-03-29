@@ -1,6 +1,13 @@
-/** API origin for fetch (browser and server). Configure `NEXT_PUBLIC_API_URL`; backend CORS must allow the site origin. */
+/**
+ * API origin for fetch. In the browser, if `NEXT_PUBLIC_API_URL` is unset, uses same-origin
+ * (`""`) so requests go to `/api/*` and Next.js rewrites proxy to the backend (good for Render).
+ * Server-side uses `INTERNAL_API_URL` or localhost:4000.
+ */
 export function getApiBase(): string {
-  return process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+  const fromEnv = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "");
+  if (fromEnv) return fromEnv;
+  if (typeof window !== "undefined") return "";
+  return process.env.INTERNAL_API_URL?.replace(/\/$/, "") || "http://127.0.0.1:4000";
 }
 
 function readCookie(name: string): string | null {

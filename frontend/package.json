@@ -6,7 +6,7 @@
     "dev": "next dev -p 3000",
     "build": "next build",
     "build:cpu-prof": "cross-env NODE_OPTIONS=--cpu-prof next build",
-    "start": "next start -p 3000"
+    "start": "next start -H 0.0.0.0"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",

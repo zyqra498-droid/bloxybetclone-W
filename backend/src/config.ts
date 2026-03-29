@@ -51,12 +51,18 @@ export type AppConfig = z.infer<typeof envSchema>;
 
 let cached: AppConfig | null = null;
 
+const REQUIRED_ENV_HINT =
+  "Set secrets in your host (e.g. Render → Environment). See repo root `.env.example` for all keys. " +
+  "Required: APP_URL, DATABASE_URL, REDIS_URL, JWT_SECRET (≥32 chars), ENCRYPTION_KEY (≥32), " +
+  "TRADE_HMAC_SECRET (≥16), CSRF_SECRET (≥32).";
+
 export function getConfig(): AppConfig {
   if (cached) return cached;
   const parsed = envSchema.safeParse(process.env);
   if (!parsed.success) {
     console.error(parsed.error.flatten().fieldErrors);
-    throw new Error("Invalid environment configuration");
+    console.error(REQUIRED_ENV_HINT);
+    throw new Error(`Invalid environment configuration. ${REQUIRED_ENV_HINT}`);
   }
   cached = parsed.data;
   return cached;
