@@ -1,7 +1,5 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -160,7 +158,12 @@ function CatalogEditableRow({
 }
 
 export default function AdminPage() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const { user: me, isLoading } = useAuth();
+
+  if (!mounted) return null;
   const [tab, setTab] = useState<Tab>("overview");
   const [totp, setTotp] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
