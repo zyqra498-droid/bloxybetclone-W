@@ -1,9 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  /** Cuts dev cold-compile work for heavy barrel packages (fewer modules in first graph). */
   experimental: {
-    optimizePackageImports: ["recharts", "framer-motion"],
+    // framer-motion removed — its barrel-import optimization causes
+    // Turbopack to evaluate React as null during /_global-error prerendering
+    optimizePackageImports: ["recharts"],
   },
   images: {
     remotePatterns: [
@@ -16,7 +17,7 @@ const nextConfig = {
   async rewrites() {
     const api = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
     return [
-      { source: "/api/:path*", destination: `${api}/api/:path*` },
+      { source: "/api/:path*", destination: `${api}/api/:path*` },s
     ];
   },
 };
