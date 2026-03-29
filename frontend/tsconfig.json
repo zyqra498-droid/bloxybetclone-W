@@ -36,6 +36,8 @@
     ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    // Dev-only generated types can be corrupted; `.next/types` is enough for `next build`.
+    ".next/dev"
   ]
 }
