@@ -1,8 +1,6 @@
 "use client";
-
 import type { ReactNode } from "react";
 import { motion } from "framer-motion";
-
 import { useAuth } from "@/contexts/AuthContext";
 import {
   SidebarLayoutProvider,
@@ -30,7 +28,11 @@ function AppShellFrame({ children }: { children: ReactNode }) {
   const isXl = useMediaXl();
 
   const mainPadLeft = isMd ? sidebarWidthPx : 0;
-  const mainPadRight = isXl ? RIGHT_CHAT_RAIL_WIDTH_PX : 0;
+  const mainPadRight = isXl
+    ? typeof RIGHT_CHAT_RAIL_WIDTH_PX === "function"
+      ? RIGHT_CHAT_RAIL_WIDTH_PX()
+      : RIGHT_CHAT_RAIL_WIDTH_PX
+    : 0;
 
   return (
     <div className="relative min-h-[100dvh] bg-bg-base">
@@ -44,13 +46,9 @@ function AppShellFrame({ children }: { children: ReactNode }) {
           ].join(", "),
         }}
       />
-
       {isMd && <Sidebar me={me} isLoading={isLoading} />}
-
       <Navbar />
-
       {isXl && <RightChatRail />}
-
       <motion.main
         className="relative z-[1] overflow-x-hidden"
         style={{
@@ -67,7 +65,6 @@ function AppShellFrame({ children }: { children: ReactNode }) {
       >
         <ErrorBoundary>{children}</ErrorBoundary>
       </motion.main>
-
       <MobileTabBar />
     </div>
   );
