@@ -693,7 +693,10 @@ function DetailPanel({
                     fontSize: "12px",
                   }}
                   labelFormatter={(v) => new Date(v as string).toLocaleString()}
-                  formatter={(value: number | string) => [`◈ ${formatCoins(Number(value))}`, "Value"]}
+                  formatter={(value) => {
+  if (value === undefined || value === null) return ['', ''];
+  return [`◈ ${formatCoins(Number(value))}`, ''];
+}}
                 />
                 <Line
                   type="monotone"
