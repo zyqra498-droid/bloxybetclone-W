@@ -38,7 +38,9 @@ export function MobileTabBar() {
       setFeed((f) => [{ id: crypto.randomUUID(), user: "Live", time: tick(), text: m.slice(0, 200) }, ...f].slice(0, 20));
     };
     s.on("activity:new", onAct);
-    return () => s.off("activity:new", onAct);
+    return () => {
+      s.off("activity:new", onAct);
+    };
   }, []);
 
   const homeActive = pathname === "/";
