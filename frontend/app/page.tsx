@@ -13,6 +13,7 @@ export default function HomePage() {
     coinsWageredToday: 0,
     activeGames: 0,
     catalogItemCount: 0,
+    catalogTotalValue: 0,
   });
   const [feed, setFeed] = useState<{ id: string; text: string }[]>([]);
   const [rooms, setRooms] = useState<BloxyCoinflipRoom[]>([]);
@@ -29,6 +30,7 @@ export default function HomePage() {
           coinsWageredToday: d.coinsWageredToday ?? 0,
           activeGames: d.activeGames ?? 0,
           catalogItemCount: d.catalogItemCount ?? 0,
+          catalogTotalValue: d.catalogTotalValue ?? 0,
         }),
       )
       .catch(() => {});
@@ -160,7 +162,7 @@ export default function HomePage() {
         <h2 className="font-display text-sm font-bold uppercase tracking-widest text-text-secondary">Live coinflip</h2>
         <div className="mt-3 flex flex-col gap-3">
           {rooms.map((r, i) => (
-            <CoinflipRoomRow key={r.id} room={r} meId={me?.id} joinHref={`/coinflip?join=${encodeURIComponent(r.id)}`} index={i} />
+            <CoinflipRoomRow key={r.id} room={r} meId={undefined} joinHref={`/coinflip?join=${encodeURIComponent(r.id)}`} index={i} />
           ))}
           {rooms.length === 0 && (
             <p className="rounded-2xl border border-dashed border-border-default bg-bg-secondary/40 py-12 text-center text-sm text-text-muted">
