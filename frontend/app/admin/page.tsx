@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -454,7 +456,7 @@ limited-bighead,Bighead,ROBLOX_LIMITED,8000,1048037
   if (!me.isAdmin) {
     return (
       <div className="rounded-xl border border-border bg-bg-secondary p-8 text-center">
-        <p className="text-text-secondary">You don’t have admin access.</p>
+        <p className="text-text-secondary">You don't have admin access.</p>
         <Link href="/" className="mt-4 inline-block text-accent-cyan hover:underline">
           Home
         </Link>
