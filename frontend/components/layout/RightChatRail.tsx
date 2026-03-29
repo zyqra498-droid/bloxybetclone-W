@@ -11,9 +11,7 @@ const DEMO_MESSAGES = [
   { id: "3", user: "Alex", time: "12:08", text: "GG on that flip — seeds looked clean" },
 ];
 
-export function RIGHT_CHAT_RAIL_WIDTH_PX(): number {
-  return 300;
-}
+export const RIGHT_CHAT_RAIL_WIDTH_PX = 300;
 
 export function RightChatRail() {
   const { user: me } = useAuth();
