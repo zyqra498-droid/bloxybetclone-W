@@ -103,22 +103,12 @@ export function CoinflipRoomRow({
 
         <div className="flex flex-col gap-2 sm:items-end">
           {canJoin ? (
-            onJoin ? (
-              <button
-                type="button"
-                onClick={onJoin}
-                className="inline-flex min-w-[88px] items-center justify-center rounded-xl bg-accent-cyan px-4 py-2 text-center text-sm font-bold text-[#0a0e14] shadow-glow-cyan transition hover:brightness-110 active:scale-[0.98]"
-              >
-                Join
-              </button>
-            ) : (
-              <Link
-                href={joinHref ?? `/coinflip?join=${encodeURIComponent(room.id)}`}
-                className="inline-flex min-w-[88px] items-center justify-center rounded-xl bg-accent-cyan px-4 py-2 text-center text-sm font-bold text-[#0a0e14] shadow-glow-cyan transition hover:brightness-110 active:scale-[0.98]"
-              >
-                Join
-              </Link>
-            )
+            <Link
+              href={joinHref ?? `/coinflip?join=${encodeURIComponent(room.id)}`}
+              className="inline-flex min-w-[88px] items-center justify-center rounded-xl bg-accent-cyan px-4 py-2 text-center text-sm font-bold text-[#0a0e14] shadow-glow-cyan transition hover:brightness-110 active:scale-[0.98]"
+            >
+              Join
+            </Link>
           ) : (
             <span className="inline-flex min-w-[88px] justify-center rounded-xl bg-bg-hover px-4 py-2 text-center text-sm font-medium text-text-muted">
               Yours
