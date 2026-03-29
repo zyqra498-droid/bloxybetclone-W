@@ -12,8 +12,15 @@ import { getSocket } from "@/lib/socket";
 import { useToast } from "@/contexts/ToastContext";
 import { CountUp } from "@/components/ui/CountUp";
 import { useMediaMd } from "@/hooks/useMediaMd";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { SITE_NAV_LINKS } from "@/lib/siteNav";
 
 const TAGLINE = "RobloxBet — Provably fair coinflip, jackpot & Roblox Limiteds market.";
+
+function navLinkActive(pathname: string, href: string): boolean {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 /* ─── Giveaway countdown strip (centre-left of navbar) ─── */
 function GiveawayStrip() {
@@ -171,10 +178,10 @@ export function Navbar() {
 
   return (
     <header
-      className="fixed right-0 top-0 z-30 flex h-14 items-center border-b border-border-default bg-bg-sidebar/95 backdrop-blur-xl"
+      className="fixed right-0 top-0 z-30 flex flex-col border-b border-border-default bg-bg-sidebar/95 backdrop-blur-xl"
       style={{ left: leftOffset }}
     >
-      <div className="flex h-full w-full items-center gap-2 px-3 md:gap-3 md:px-4">
+      <div className="flex h-14 min-h-[56px] w-full items-center gap-2 px-3 md:gap-3 md:px-4">
 
         {/* Mobile logo (hidden on desktop — sidebar has it) */}
         <Link
@@ -216,6 +223,7 @@ export function Navbar() {
 
         {/* Right section */}
         <div className="flex shrink-0 items-center gap-2">
+          <ThemeToggle />
           {/* Balance chip */}
           {me && !isLoading && (
             <BalanceChip value={Math.round(me.balanceCoins)} />
@@ -371,13 +379,15 @@ export function Navbar() {
             !isLoading && (
               <Link
                 href="/login"
-                className="flex items-center gap-2 rounded-lg bg-accent-blue px-4 py-2 text-sm font-bold text-bg-base transition hover:brightness-110 active:scale-95"
+                title="Log in with your Roblox account"
+                className="flex items-center gap-2 rounded-lg bg-accent-blue px-3 py-2 text-sm font-bold text-[#0a0e14] transition hover:brightness-110 active:scale-95 sm:px-4"
               >
-                <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+                <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4 shrink-0">
                   <path fillRule="evenodd" d="M3 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-2 0V4H5v12h10v-2a1 1 0 0 1 2 0v3a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V3z" clipRule="evenodd" />
                   <path fillRule="evenodd" d="M16.707 10.293a1 1 0 0 1 0 1.414l-3 3a1 1 0 0 1-1.414-1.414L13.586 12H7a1 1 0 1 1 0-2h6.586l-1.293-1.293a1 1 0 0 1 1.414-1.414l3 3z" clipRule="evenodd" />
                 </svg>
-                Login
+                <span className="sm:hidden">Log in</span>
+                <span className="hidden sm:inline">Log in with Roblox</span>
               </Link>
             )
           )}
@@ -394,6 +404,40 @@ export function Navbar() {
           </button>
         </div>
       </div>
+
+      <nav
+        className="flex w-full max-w-full items-center gap-0.5 overflow-x-auto border-t border-border-default bg-bg-base/40 px-2 py-1.5 md:gap-1 md:px-4"
+        aria-label="Main navigation"
+      >
+        {SITE_NAV_LINKS.map((item) => {
+          const active = navLinkActive(pathname, item.href);
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`shrink-0 whitespace-nowrap rounded-lg px-2 py-1 text-[10px] font-semibold uppercase tracking-wide transition sm:px-2.5 sm:text-[11px] md:text-xs ${
+                active
+                  ? "bg-accent-blue/15 text-accent-blue"
+                  : "text-text-secondary hover:bg-bg-card hover:text-text-primary"
+              }`}
+            >
+              {item.label}
+            </Link>
+          );
+        })}
+        {me?.isAdmin && (
+          <Link
+            href="/admin"
+            className={`shrink-0 whitespace-nowrap rounded-lg px-2 py-1 text-[10px] font-semibold uppercase tracking-wide transition sm:px-2.5 sm:text-[11px] md:text-xs ${
+              pathname.startsWith("/admin")
+                ? "bg-accent-purple/20 text-accent-purple"
+                : "text-text-secondary hover:bg-bg-card hover:text-text-primary"
+            }`}
+          >
+            Admin
+          </Link>
+        )}
+      </nav>
     </header>
   );
 }

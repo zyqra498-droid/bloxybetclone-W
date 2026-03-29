@@ -17,7 +17,8 @@ import {
 } from "@/components/layout/RightChatRail";
 import { Sidebar } from "@/components/layout/Sidebar";
 
-const NAVBAR_HEIGHT_PX = 56;
+/** Top bar (56px) + site nav row (36px) — keep in sync with `Navbar` */
+const NAVBAR_HEIGHT_PX = 92;
 const MOBILE_TAB_BAR_SPACE_PX = 72;
 const DESKTOP_BOTTOM_SPACE_PX = 24;
 

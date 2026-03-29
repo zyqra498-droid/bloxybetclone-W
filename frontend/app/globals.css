@@ -59,6 +59,36 @@
   --font-inter:     "Inter", sans-serif;
   --font-rajdhani:  "Rajdhani", sans-serif;
   --font-jetbrains: "JetBrains Mono", monospace;
+
+  /* Card shadow (theme-aware via Tailwind shadow-card) */
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+/* Light theme — same structure, softer surfaces */
+[data-theme="light"] {
+  --bg-base: #eef1f8;
+  --bg-sidebar: #e4eaf4;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f0f4fb;
+  --bg-input: #ffffff;
+  --bg-modal: #ffffff;
+
+  --bg-primary: #eef1f8;
+  --bg-secondary: #e8edf6;
+  --bg-tertiary: #dce4f2;
+
+  --text-primary: #0f1419;
+  --text-secondary: #4a5568;
+  --text-muted: #718096;
+
+  --border: rgba(15, 23, 42, 0.1);
+  --border-hover: rgba(14, 116, 144, 0.35);
+  --border-green: rgba(0, 160, 120, 0.28);
+
+  --glass-bg: rgba(15, 23, 42, 0.04);
+  --glass-border: rgba(15, 23, 42, 0.08);
+
+  --shadow-card: 0 4px 24px rgba(15, 23, 42, 0.07), 0 0 0 1px rgba(15, 23, 42, 0.06);
 }
 
 /* ═══════════════════════════════════════════════

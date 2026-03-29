@@ -10,49 +10,44 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        /* ── Base backgrounds (BloxyBet dark navy stack) ── */
-        "bg-base":       "#0f1117",   // deepest page background
-        "bg-sidebar":    "#161b26",   // left sidebar + right chat
-        "bg-card":       "#1a1f2e",   // cards, rows, elevated surfaces
-        "bg-card-hover": "#1f2640",   // hover state on rows
-        "bg-input":      "#0f1117",   // input fields
-        "bg-modal":      "#161b26",   // modal backgrounds
+        /* Theme tokens — globals.css :root / [data-theme="light"] */
+        "bg-base":       "var(--bg-base)",
+        "bg-sidebar":    "var(--bg-sidebar)",
+        "bg-card":       "var(--bg-card)",
+        "bg-card-hover": "var(--bg-card-hover)",
+        "bg-input":      "var(--bg-input)",
+        "bg-modal":      "var(--bg-modal)",
 
-        /* Legacy aliases — kept so existing code doesn't break */
-        "bg-primary":   "#0f1117",
-        "bg-secondary": "#161b26",
-        "bg-tertiary":  "#1a1f2e",
-        "bg-hover":     "#1f2640",
-        card:           "#1a1f2e",
-        surface:        "#161b26",
+        "bg-primary":   "var(--bg-primary)",
+        "bg-secondary": "var(--bg-secondary)",
+        "bg-tertiary":  "var(--bg-tertiary)",
+        "bg-hover":     "var(--bg-card-hover)",
+        card:           "var(--bg-card)",
+        surface:        "var(--bg-sidebar)",
 
-        /* ── Accent colours ── */
-        "accent-blue":   "#7DD3FC",   // PRIMARY — buttons, active states, highlights
-        "accent-green":  "#00C896",   // SECONDARY — gem values, wins, success
-        "accent-gold":   "#F5C542",   // jackpot pot, warnings
-        "accent-red":    "#F87171",   // errors, losses
-        "accent-purple": "#A78BFA",   // rare tier items
+        "accent-blue":   "var(--accent-blue)",
+        "accent-green":  "var(--accent-green)",
+        "accent-gold":   "var(--accent-gold)",
+        "accent-red":    "var(--accent-red)",
+        "accent-purple": "var(--accent-purple)",
 
-        /* Legacy accent aliases */
-        "accent-cyan":       "#7DD3FC",
+        "accent-cyan":       "var(--accent-cyan)",
         "accent-cyan-dim":   "#1e6fa8",
         "accent-pink":       "#F472B6",
-        primary:             "#7DD3FC",
-        success:             "#00C896",
-        warning:             "#F5C542",
-        accent:              "#F87171",
-        muted:               "#4a5568",
+        primary:             "var(--accent-blue)",
+        success:             "var(--accent-green)",
+        warning:             "var(--accent-gold)",
+        accent:              "var(--accent-red)",
+        muted:               "var(--text-muted)",
 
-        /* ── Text ── */
-        "text-primary":   "#ffffff",
-        "text-secondary": "#a0aec0",
-        "text-muted":     "#4a5568",
+        "text-primary":   "var(--text-primary)",
+        "text-secondary": "var(--text-secondary)",
+        "text-muted":     "var(--text-muted)",
 
-        /* ── Borders ── */
-        "border-default": "rgba(255,255,255,0.05)",
-        "border-hover":   "rgba(125,211,252,0.15)",
-        "border-green":   "rgba(0,200,150,0.2)",
-        border:           "rgba(255,255,255,0.05)",
+        "border-default": "var(--border)",
+        "border-hover":   "var(--border-hover)",
+        "border-green":   "var(--border-green)",
+        border:           "var(--border)",
       },
 
       fontFamily: {
@@ -69,7 +64,7 @@ const config: Config = {
       },
 
       boxShadow: {
-        card:          "0 4px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.04)",
+        card:          "var(--shadow-card)",
         "glow-blue":   "0 0 20px rgba(125,211,252,0.3)",
         "glow-green":  "0 0 16px rgba(0,200,150,0.25)",
         "glow-gold":   "0 0 24px rgba(245,197,66,0.35)",

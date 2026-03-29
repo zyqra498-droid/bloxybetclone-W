@@ -6,8 +6,10 @@ import { useEffect, useState } from "react";
 import { CoinflipRoomRow, type BloxyCoinflipRoom } from "@/components/bloxy/CoinflipRoomRow";
 import { getSocket } from "@/lib/socket";
 import { formatCoins } from "@/lib/format";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function HomePage() {
+  const { isLoggedIn, isLoading: authLoading } = useAuth();
   const [stats, setStats] = useState({
     onlineUsers: 0,
     coinsWageredToday: 0,
@@ -115,6 +117,14 @@ export default function HomePage() {
               >
                 Play now
               </Link>
+              {!authLoading && !isLoggedIn && (
+                <Link
+                  href="/login"
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-accent-blue/45 bg-accent-blue/15 px-6 text-sm font-bold text-accent-blue shadow-[0_0_20px_rgba(125,211,252,0.12)] transition hover:bg-accent-blue/25 active:scale-[0.98]"
+                >
+                  Log in with Roblox
+                </Link>
+              )}
               <Link
                 href="/wallet"
                 className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-border-default bg-bg-tertiary px-6 text-sm font-semibold text-text-primary transition hover:border-accent-cyan/30"
