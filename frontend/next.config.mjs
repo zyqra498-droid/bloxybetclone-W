@@ -1,11 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  experimental: {
-    // framer-motion removed — its barrel-import optimization causes
-    // Turbopack to evaluate React as null during /_global-error prerendering
-    optimizePackageImports: ["recharts"],
-  },
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "*.rbxcdn.com", pathname: "/**" },
