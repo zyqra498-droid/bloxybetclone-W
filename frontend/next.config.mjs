@@ -1,9 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Exclude browser-only packages from the SSR bundle so they are never
-  // evaluated during prerendering of /_global-error, /_not-found, etc.
-  serverExternalPackages: ["framer-motion", "socket.io-client", "canvas-confetti"],
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "*.rbxcdn.com", pathname: "/**" },
