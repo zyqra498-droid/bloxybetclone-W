@@ -10,9 +10,13 @@ const nextConfig = {
     ],
   },
   async rewrites() {
-    const api = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+    /** Server-side proxy target (monolith on Render: API on 127.0.0.1:4000). Browser uses same-origin /api when NEXT_PUBLIC_API_URL is unset. */
+    const api =
+      process.env.INTERNAL_API_URL ||
+      process.env.NEXT_PUBLIC_API_URL ||
+      "http://127.0.0.1:4000";
     return [
-      { source: "/api/:path*", destination: `${api}/api/:path*` },
+      { source: "/api/:path*", destination: `${api.replace(/\/$/, "")}/api/:path*` },
     ];
   },
 };

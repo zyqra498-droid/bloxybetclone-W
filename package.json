@@ -1,6 +1,9 @@
 {
   "name": "roblox-gamble-platform",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "workspaces": [
     "frontend",
     "backend"
