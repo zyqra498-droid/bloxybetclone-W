@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Exclude browser-only packages from the SSR bundle so they are never
+  // evaluated during prerendering of /_global-error, /_not-found, etc.
+  serverExternalPackages: ["framer-motion", "socket.io-client", "canvas-confetti"],
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "*.rbxcdn.com", pathname: "/**" },
@@ -10,7 +13,6 @@ const nextConfig = {
     ],
   },
   async rewrites() {
-    /** Server-side proxy target (monolith on Render: API on 127.0.0.1:4000). Browser uses same-origin /api when NEXT_PUBLIC_API_URL is unset. */
     const api =
       process.env.INTERNAL_API_URL ||
       process.env.NEXT_PUBLIC_API_URL ||
