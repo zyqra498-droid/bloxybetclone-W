@@ -1,7 +1,14 @@
 "use client";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
-import { AppShell } from "@/components/AppShell";
+
+// Import AppShell with ssr:false so socket.io-client and framer-motion
+// are never evaluated during server-side prerendering
+const AppShell = dynamic(
+  () => import("@/components/layout/AppShell").then((m) => m.AppShell),
+  { ssr: false }
+);
 
 const NO_SHELL_PREFIXES = ["/login", "/verify"];
 
