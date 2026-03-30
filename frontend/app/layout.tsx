@@ -1,7 +1,13 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 import "./globals.css";
-import { ThemeInit } from "./ThemeInit";
-import { Providers } from "./providers";
+
+// Load all providers client-side only — prevents framer-motion, socket.io,
+// and other browser-only packages from being evaluated during SSR prerendering
+const Providers = dynamic(
+  () => import("./providers").then((m) => m.Providers),
+  { ssr: false }
+);
 
 export const metadata: Metadata = {
   title: "BloxyBet",
@@ -16,7 +22,6 @@ export default function RootLayout({
   return (
     <html lang="en" data-theme="dark" suppressHydrationWarning>
       <body className="bg-bg-base text-text-primary">
-        <ThemeInit />
         <Providers>{children}</Providers>
       </body>
     </html>
