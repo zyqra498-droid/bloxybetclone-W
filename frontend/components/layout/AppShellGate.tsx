@@ -1,14 +1,13 @@
 "use client";
-import dynamic from "next/dynamic";
+
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
+import { AppShell } from "@/components/layout/AppShell";
 
-// Import AppShell with ssr:false so socket.io-client and framer-motion
-// are never evaluated during server-side prerendering
-const AppShell = dynamic(
-  () => import("@/components/layout/AppShell").then((m) => m.AppShell),
-  { ssr: false }
-);
+/* NOTE: Do not use `next/dynamic(..., { ssr: false })` for AppShell — on Next 15
+   production builds it can trip the Pages `/_error` prerender and throw
+   "<Html> should not be imported outside of pages/_document". Static import is safe
+   because AppShell is a client component and AppShellGate skips rendering it until mounted. */
 
 const NO_SHELL_PREFIXES = ["/login", "/verify"];
 
