@@ -9,7 +9,6 @@
     "backend"
   ],
   "scripts": {
-    "postinstall": "node scripts/postinstall-prisma.cjs",
     "db:generate": "prisma generate --schema=./prisma/schema.prisma",
     "db:migrate": "prisma migrate dev --schema=./prisma/schema.prisma",
     "db:push": "prisma db push --schema=./prisma/schema.prisma",
