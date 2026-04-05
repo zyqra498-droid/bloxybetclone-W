@@ -225,7 +225,7 @@ export default function CaseBattlesPage() {
                           type="button"
                           disabled={busy}
                           onClick={() => void joinLobby(b.id)}
-                          className="rounded-pill bg-accent-gold px-3 py-1.5 text-xs font-semibold text-bg-primary disabled:opacity-50"
+                          className="rounded-pill bg-accent-gold px-3 py-1.5 text-xs font-medium text-bg-primary disabled:opacity-50"
                         >
                           Join
                         </button>

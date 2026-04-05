@@ -53,7 +53,7 @@ function NotificationsContent() {
               n.read ? "bg-bg-secondary/50 opacity-75" : "bg-bg-secondary/95"
             }`}
           >
-            <p className="font-semibold text-text-primary">{n.title}</p>
+            <p className="font-medium text-text-primary">{n.title}</p>
             <p className="mt-1 text-sm text-text-secondary">{n.body}</p>
             <p className="mt-2 text-xs text-text-muted">{new Date(n.createdAt).toLocaleString()}</p>
           </li>

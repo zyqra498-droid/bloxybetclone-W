@@ -28,6 +28,7 @@
     "wait-on": "^8.0.1"
   },
   "prisma": {
+    "schema": "./prisma/schema.prisma",
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {

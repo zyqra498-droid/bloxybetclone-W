@@ -240,7 +240,7 @@ export default function HomePage() {
                 transition={{ delay: Math.min(idx * 0.02, 0.18) }}
                 className="flex gap-3 rounded-xl border border-border-default bg-bg-tertiary/50 px-3 py-2.5"
               >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent-cyan/15 font-display text-[10px] font-bold text-accent-cyan">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent-cyan/15 font-display text-[10px] font-medium text-accent-cyan">
                   {String.fromCharCode(65 + (idx % 26))}
                 </div>
                 <p className="min-w-0 flex-1 text-xs leading-snug text-text-secondary">{x.text}</p>
@@ -262,9 +262,9 @@ export default function HomePage() {
                 key={r.userId}
                 className="flex items-center justify-between rounded-xl border border-border-default bg-bg-tertiary/40 px-3 py-2 text-sm"
               >
-                <span className="font-display font-bold text-accent-cyan">{i + 1}</span>
+                <span className="font-display font-medium tabular-nums text-accent-cyan">{i + 1}</span>
                 <span className="flex-1 truncate px-2 text-text-primary">{r.username}</span>
-                <span className="font-display text-xs font-bold text-accent-gold">{formatCoins(r.wagered)}</span>
+                <span className="font-display text-xs font-medium tabular-nums text-accent-gold">{formatCoins(r.wagered)}</span>
               </li>
             ))}
             {leaderboard.length === 0 && <li className="text-sm text-text-muted">No leaderboard data yet.</li>}

@@ -73,13 +73,10 @@ registerTradeWorker();
 startJackpotTimer();
 startCoinflipCoinExpireScheduler();
 
-syncTradeBotFromEnv()
-  .then(() => {
-    server.listen(cfg.PORT, () => {
-      console.log(`API listening on :${cfg.PORT}`);
-    });
-  })
-  .catch((e) => {
-    console.error("[trade-bot] env sync failed", e);
-    process.exit(1);
-  });
+void syncTradeBotFromEnv().catch((e) => {
+  console.error("[trade-bot] env sync failed (API still starting):", e);
+});
+
+server.listen(cfg.PORT, () => {
+  console.log(`API listening on :${cfg.PORT}`);
+});

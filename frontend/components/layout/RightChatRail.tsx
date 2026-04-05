@@ -65,12 +65,12 @@ export function RightChatRail() {
           {feed.map((row) => (
             <li key={row.id} className="rounded-xl bg-bg-tertiary/50 px-2.5 py-2">
               <div className="flex items-center gap-2">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-cyan/15 text-[10px] font-bold text-accent-cyan">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-accent-cyan/15 text-[10px] font-medium text-accent-cyan">
                   {row.user.slice(0, 1)}
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline justify-between gap-2">
-                    <span className="truncate text-xs font-semibold text-text-primary">{row.user}</span>
+                    <span className="truncate text-xs font-medium text-text-primary">{row.user}</span>
                     <span className="shrink-0 text-[10px] text-text-muted">{row.time}</span>
                   </div>
                   <p className="mt-0.5 text-xs leading-snug text-text-secondary">{row.text}</p>

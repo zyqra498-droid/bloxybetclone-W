@@ -140,7 +140,7 @@ export function MobileTabBar() {
             <ul className="flex-1 space-y-2 overflow-y-auto px-4 py-3">
               {feed.map((row) => (
                 <li key={row.id} className="rounded-xl bg-bg-tertiary/60 px-3 py-2">
-                  <div className="flex justify-between gap-2 text-xs font-semibold text-text-primary">
+                  <div className="flex justify-between gap-2 text-xs font-medium text-text-primary">
                     <span>{row.user}</span>
                     <span className="text-text-muted">{row.time}</span>
                   </div>
